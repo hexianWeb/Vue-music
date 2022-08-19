@@ -4,6 +4,7 @@ const Recommend = () => import("@/views/recommend");
 const Singer = () => import("@/views/singer");
 const TopList = () => import("@/views/toplist");
 const Search = () => import("@/views/search");
+const SingerDetail = () => import("@/views/singer-detail");
 const routes = [
   {
     path: "/",
@@ -16,6 +17,8 @@ const routes = [
   {
     path: "/singer",
     component: Singer,
+    // 子路由配置
+    children: [{ path: ":id", component: SingerDetail }],
   },
   {
     path: "/top-list",
