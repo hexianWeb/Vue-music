@@ -23,3 +23,26 @@ export function processSongs(songs) {
       });
   });
 }
+
+const lyricMap = {};
+// 歌词获取Api
+export function getLyric(song) {
+  // debugger;
+  if (song.lyric) {
+    return Promise.resolve(song.lyric);
+  }
+  const mid = song.mid;
+  // 通过Mid做一个校验 因为不同的歌曲可能是同一个Mid （比如两人合唱）
+  const lyric = lyricMap[mid];
+  if (lyric) {
+    return Promise.resolve(lyric);
+  }
+  return get("/api/getLyric", {
+    mid,
+  }).then((res) => {
+    console.log(res);
+    const lyric = res ? res.lyric : "歌词没有获取";
+    lyricMap[mid] = lyric;
+    return lyric;
+  });
+}

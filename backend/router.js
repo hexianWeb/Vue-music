@@ -129,7 +129,7 @@ function registerRouter(app) {
   registerSearch(app);
 }
 
-// 注册推荐列表接口路由
+// done: 注册推荐列表接口路由
 function registerRecommend(app) {
   app.get("/api/getRecommend", (req, res) => {
     // 第三方服务接口 url
@@ -218,7 +218,7 @@ function registerRecommend(app) {
   });
 }
 
-// 注册歌手列表接口路由
+// done: 注册歌手列表接口路由
 function registerSingerList(app) {
   app.get("/api/getSingerList", (req, res) => {
     const url = "https://u.y.qq.com/cgi-bin/musics.fcg";
@@ -327,7 +327,7 @@ function registerSingerList(app) {
   }
 }
 
-// 注册歌手详情接口路由
+// done: 注册歌手详情接口路由
 function registerSingerDetail(app) {
   app.get("/api/getSingerDetail", (req, res) => {
     const url = "https://u.y.qq.com/cgi-bin/musics.fcg";
@@ -368,7 +368,7 @@ function registerSingerDetail(app) {
   });
 }
 
-// 注册歌曲 url 获取接口路由
+// done: 注册歌曲 url 获取接口路由
 // 因为歌曲的 url 每天都在变化，所以需要单独的接口根据歌曲的 mid 获取
 function registerSongsUrl(app) {
   app.get("/api/getSongsUrl", (req, res) => {
@@ -448,7 +448,7 @@ function registerSongsUrl(app) {
   });
 }
 
-// 注册歌词接口
+// done: 注册歌词接口
 function registerLyric(app) {
   app.get("/api/getLyric", (req, res) => {
     const url = "https://c.y.qq.com/lyric/fcgi-bin/fcg_query_lyric_new.fcg";
@@ -474,7 +474,7 @@ function registerLyric(app) {
   });
 }
 
-// 注册歌单专辑接口
+// done: 注册歌单专辑接口
 function registerAlbum(app) {
   app.get("/api/getAlbum", (req, res) => {
     const data = {
@@ -519,7 +519,7 @@ function registerAlbum(app) {
   });
 }
 
-// 注册排行榜接口
+// done: 注册排行榜接口
 function registerTopList(app) {
   app.get("/api/getTopList", (req, res) => {
     const url = "https://u.y.qq.com/cgi-bin/musics.fcg";
@@ -571,13 +571,14 @@ function registerTopList(app) {
           },
         });
       } else {
+        console.log("接口失效");
         res.json(data);
       }
     });
   });
 }
 
-// 注册排行榜详情接口
+// done: 注册排行榜详情接口
 function registerTopDetail(app) {
   app.get("/api/getTopDetail", (req, res) => {
     const url = "https://u.y.qq.com/cgi-bin/musics.fcg";
@@ -626,119 +627,84 @@ function registerTopDetail(app) {
   });
 }
 
-// 注册热门搜索接口
+// fixme: 注册热门搜索接口
 function registerHotKeys(app) {
   app.get("/api/getHotKeys", (req, res) => {
-    const url = "https://c.y.qq.com/splcloud/fcgi-bin/gethotkey.fcg";
-
-    get(url, {
-      g_tk_new_20200303: token,
-    }).then((response) => {
-      const data = response.data;
-      if (data.code === ERR_OK) {
-        res.json({
-          code: ERR_OK,
-          result: {
-            hotKeys: data.data.hotkey
-              .map((key) => {
-                return {
-                  key: key.k,
-                  id: key.n,
-                };
-              })
-              .slice(0, 10),
-          },
-        });
-      } else {
-        res.json(data);
-      }
-    });
+    // fixme: 搜索接口已经被弃用
+    // const url = "https://c.y.qq.com/splcloud/fcgi-bin/gethotkey.fcg";
+    // get(url, {
+    //   g_tk_new_20200303: token,
+    // }).then((response) => {
+    //   const data = response.data;
+    //   console.log(data);
+    //   if (data.code === ERR_OK) {
+    //     res.json({
+    //       code: ERR_OK,
+    //       result: {
+    //         hotKeys: data.data.hotkey
+    //           .map((key) => {
+    //             return {
+    //               key: key.k,
+    //               id: key.n,
+    //             };
+    //           })
+    //           .slice(0, 10),
+    //       },
+    //     });
+    //   } else {
+    //     res.json(data);
+    //   }
+    // });
   });
 }
 
-// 注册搜索查询接口
+// fixme: 注册搜索查询接口
 function registerSearch(app) {
   app.get("/api/search", (req, res) => {
-    const url = "https://c.y.qq.com/soso/fcgi-bin/search_for_qq_cp";
+    //#region
 
-    const { query, page, showSinger } = req.query;
+    //#endregion
+    const { query } = req.query;
 
-    const data = {
-      _: getRandomVal(),
-      g_tk_new_20200303: token,
-      w: query,
-      p: page,
-      perpage: 20,
-      n: 20,
-      zhidaqu: 1,
-      catZhida: showSinger === "true" ? 1 : 0,
-      t: 0,
-      flag: 1,
-      ie: "utf-8",
-      sem: 1,
-      aggr: 0,
-      remoteplace: "txt.mqq.all",
-      uin: "0",
-      needNewCode: 1,
-      platform: "h5",
-      format: "json",
-    };
-
-    get(url, data).then((response) => {
+    const url = `http://127.0.0.1:3300/search?key=${query}`;
+    const r_url = encodeURI(url);
+    get(r_url).then((response) => {
       const data = response.data;
-      if (data.code === ERR_OK) {
-        const songList = [];
-        const songData = data.data.song;
-        const list = songData.list;
+      // console.dir(data);
+      const songList = [];
+      const list = data.data.list;
+      const singer = data.data.list[0].singer;
+      const { pageNo, pageSize, total } = data.data;
+      const hasMore = pageNo * pageSize < total;
+      list.forEach((item) => {
+        const info = item;
+        const song = {
+          id: info.songid,
+          mid: info.songmid,
+          name: info.songname,
+          singer: info.singer,
+          url: "",
+          duration: info.interval,
+          pic: info.albummid
+            ? `https://y.gtimg.cn/music/photo_new/T002R800x800M000${info.albummid}.jpg?max_age=2592000`
+            : fallbackPicUrl,
+          album: info.albumname,
+        };
+        songList.push(song);
+      });
 
-        list.forEach((item) => {
-          const info = item;
-          if (info.pay.payplay !== 0 || !info.interval) {
-            // 过滤付费歌曲
-            return;
-          }
-
-          const song = {
-            id: info.songid,
-            mid: info.songmid,
-            name: info.songname,
-            singer: mergeSinger(info.singer),
-            url: "",
-            duration: info.interval,
-            pic: info.albummid
-              ? `https://y.gtimg.cn/music/photo_new/T002R800x800M000${info.albummid}.jpg?max_age=2592000`
-              : fallbackPicUrl,
-            album: info.albumname,
-          };
-          songList.push(song);
-        });
-
-        let singer;
-        const zhida = data.data.zhida;
-        if (zhida && zhida.type === 2) {
-          singer = {
-            id: zhida.singerid,
-            mid: zhida.singermid,
-            name: zhida.singername,
-            pic: `https://y.gtimg.cn/music/photo_new/T001R800x800M000${zhida.singermid}.jpg?max_age=2592000`,
-          };
-        }
-
-        const { curnum, curpage, totalnum } = songData;
-        const hasMore = 20 * (curpage - 1) + curnum < totalnum;
-
-        res.json({
-          code: ERR_OK,
-          result: {
-            songs: songList,
-            singer,
-            hasMore,
-          },
-        });
-      } else {
-        res.json(data);
-      }
+      res.json({
+        code: ERR_OK,
+        result: {
+          songs: songList,
+          singer,
+          hasMore,
+        },
+      });
     });
+    // axios.get(url).then((Res) => {
+    //   console.log(Res);
+    // });
   });
 }
 

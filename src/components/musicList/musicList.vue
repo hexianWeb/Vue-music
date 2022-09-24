@@ -15,7 +15,7 @@
         v-show="songs.length > 0"
         :style="playBtnStyle"
       >
-        <div class="play-btn" @click="playList">
+        <div class="play-btn" @click="playMode">
           <i class="icon-play">
             <span class="text"> 随机播放全部 </span>
           </i>
@@ -32,16 +32,18 @@
       @scroll="onScroll"
     >
       <div class="song-list-wrapper">
-        <songe-list :songs="songs" @select="selectItem"> </songe-list>
+        <songe-list :songs="songs" @select="selectItem" :rank="rank">
+        </songe-list>
       </div>
     </scroll>
   </div>
 </template>
 
 <script>
-import Scroll from "@/components/scroll/scroll.vue";
+// import Scroll from "@/components/scroll/scroll.vue";
+import Scroll from "@/components/wrap-scroll";
 import SongeList from "@/components/base/songList/songList.vue";
-import { mapActions } from "vuex";
+import { mapActions, mapState } from "vuex";
 const RESERVED_HEIGHT = 40;
 export default {
   name: "musicList",
@@ -59,6 +61,10 @@ export default {
     title: String,
     pic: String,
     loading: Boolean,
+    rank: Boolean,
+  },
+  setup(props) {
+    console.log(props);
   },
   data() {
     return {
@@ -96,8 +102,10 @@ export default {
       };
     },
     scrollStyle() {
+      const bottom = this.playList.length ? "60px" : "0";
       return {
         top: `${this.imageHeight}px`,
+        bottom,
       };
     },
     filterStyle() {
@@ -124,6 +132,7 @@ export default {
         display: `${display}`,
       };
     },
+    ...mapState(["playList"]),
   },
   methods: {
     goBack() {
@@ -139,7 +148,7 @@ export default {
         index,
       });
     },
-    playList() {
+    playMode() {
       this.randomPlay(this.songs);
     },
     ...mapActions(["selectPlay", "randomPlay"]),

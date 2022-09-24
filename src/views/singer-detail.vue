@@ -10,60 +10,66 @@
 </template>
 
 <script>
-import storage from "good-storage";
+// import storage from "good-storage";
 import { SINGER_KEY } from "@/assets/js/constant";
 import { getSingerDetail } from "@/service/singer";
-import { processSongs } from "@/service/song";
-import musicList from "@/components/musicList/musicList.vue";
-export default {
-  name: "singer-detail",
-  components: {
-    musicList,
-  },
-  props: {
-    singer: Object,
-  },
-  data() {
-    return {
-      songs: [],
-      loading: true,
-    };
-  },
-  computed: {
-    // 获取singer 包含跳转来源与session来源
-    computedSinger() {
-      let res = null;
-      const singer = this.singer;
-      if (singer) {
-        res = singer;
-      } else {
-        const cachedSinger = storage.session.get(SINGER_KEY);
-        if (cachedSinger && cachedSinger.mid === this.$route.params.id) {
-          res = cachedSinger;
-        }
-      }
-      return res;
-    },
-    pic() {
-      const singer = this.computedSinger;
-      return singer && singer.pic;
-    },
-    title() {
-      const singer = this.computedSinger;
-      return singer && singer.name;
-    },
-  },
-  async created() {
-    if (!this.computedSinger) {
-      const path = this.$route.matched[0].path;
-      this.$router.push(path);
-      return;
-    }
-    const res = await getSingerDetail(this.computedSinger);
-    this.songs = await processSongs(res.songs);
-    this.loading = false;
-  },
-};
+// import { processSongs } from "@/service/song";
+// import musicList from "@/components/musicList/musicList.vue";
+import createDetailComponent from "@/assets/js/create-detail-component";
+export default createDetailComponent(
+  "singerDetail",
+  SINGER_KEY,
+  getSingerDetail
+);
+// export default {
+//   name: "singer-detail",
+//   components: {
+//     musicList,
+//   },
+//   props: {
+//     singer: Object,
+//   },
+//   data() {
+//     return {
+//       songs: [],
+//       loading: true,
+//     };
+//   },
+//   computed: {
+//     // 获取singer 包含跳转来源与session来源
+//     computedSinger() {
+//       let res = null;
+//       const singer = this.singer;
+//       if (singer) {
+//         res = singer;
+//       } else {
+//         const cachedSinger = storage.session.get(SINGER_KEY);
+//         if (cachedSinger && cachedSinger.mid === this.$route.params.id) {
+//           res = cachedSinger;
+//         }
+//       }
+//       return res;
+//     },
+//     pic() {
+//       const singer = this.computedSinger;
+//       return singer && singer.pic;
+//     },
+//     title() {
+//       const singer = this.computedSinger;
+//       return singer && singer.name;
+//     },
+//   },
+//   async created() {
+//     if (!this.computedSinger) {
+//       const path = this.$route.matched[0].path;
+//       this.$router.push(path);
+//       return;
+//     }
+//     const res = await getSingerDetail(this.computedSinger);
+//     this.songs = await processSongs(res.songs);
+//     this.loading = false;
+//   },
+// };
 </script>
 
 <style lang="scss" scoped>

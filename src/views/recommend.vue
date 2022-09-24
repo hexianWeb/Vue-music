@@ -14,7 +14,12 @@
         <div class="recommend-list">
           <h1 class="list-title" v-show="!loading">热门歌单推荐</h1>
           <ul>
-            <li v-for="item of albums" class="item" :key="item.id">
+            <li
+              v-for="item of albums"
+              class="item"
+              :key="item.id"
+              @click="selectItem(item)"
+            >
               <div class="icon">
                 <img width="60" height="60" v-lazy="item.pic" />
               </div>
@@ -31,16 +36,30 @@
         </div>
       </div>
     </scroll>
+    <!-- 跳转歌单 -->
+    <router-view v-slot="{ Component }">
+      <transition
+        name="animate__animated "
+        enter-active-class="animate__fadeInRight"
+        leave-active-class="animate__fadeOutLeft"
+      >
+        <component :is="Component" :data="selectedAlbum" />
+      </transition>
+    </router-view>
   </div>
 </template>
 
 <script>
 import { ref, computed } from "vue";
+import { useRouter } from "vue-router";
 import BannerSwiper from "@/components/bannerSwiper/index.vue";
 import { getRecommend } from "@/service/recommend";
 import { onBeforeMount } from "@vue/runtime-core";
+import storage from "good-storage";
+import { ALBUM_KEY } from "@/assets/js/constant";
 // 注册使用scroll组件
-import Scroll from "@/components/scroll/scroll.vue";
+// import Scroll from "@/components/scroll/scroll.vue";
+import Scroll from "@/components/wrap-scroll";
 export default {
   name: "recommend",
   components: {
@@ -57,7 +76,12 @@ export default {
     // 轮播图变量
     const carouseList = ref([]);
     const albums = ref([]);
+    const selectedAlbum = ref(null);
     const loadingText = "正在载入";
+
+    // router
+    const router = useRouter();
+    // computed
     const loading = computed(() => {
       return !carouseList.value.length && !albums.value.length;
     });
@@ -67,11 +91,25 @@ export default {
       albums.value = data.albums;
     });
 
+    function selectItem(album) {
+      selectedAlbum.value = album;
+      cacheAlbum(album);
+      router.push({
+        path: `/recommend/${album.id}`,
+      });
+    }
+    // 持久层 防止刷新丢失数据
+    function cacheAlbum(album) {
+      storage.session.set(ALBUM_KEY, album);
+    }
     return {
+      // data
       loading,
       carouseList,
       albums,
+      selectedAlbum,
       loadingText,
+      selectItem,
     };
   },
 };

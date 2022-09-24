@@ -50,7 +50,8 @@
 // 注册使用scroll组件
 import useFixed from "./use-fixed";
 import useShortCut from "./use-shortcut";
-import Scroll from "@/components/scroll/scroll.vue";
+// import Scroll from "@/components/scroll/scroll.vue";
+import Scroll from "@/components/wrap-scroll";
 export default {
   name: "singer-list",
   components: { Scroll },

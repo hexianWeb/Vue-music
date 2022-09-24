@@ -10,7 +10,7 @@
         leave-active-class="animate__fadeOutLeft"
       >
         <!-- is 指向component即可 -->
-        <component :is="Component" :singer="selectedSinger"></component>
+        <component :is="Component" :data="selectedSinger"></component>
       </transition>
     </router-view>
   </div>

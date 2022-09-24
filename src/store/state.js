@@ -1,4 +1,5 @@
-import { PLAY_MODE } from "@/assets/js/constant";
+import { PLAY_MODE, FAVORITE_KEY } from "@/assets/js/constant";
+import { load } from "@/assets/js/array-store";
 const state = {
   // 顺序播放列表
   sequenceList: [],
@@ -11,6 +12,8 @@ const state = {
   // 当前播放的下标
   currentIndex: 0,
   fullScreen: false,
+  // 初始设置为加载本地数据
+  favoriteList: load(FAVORITE_KEY) || [],
 };
 
 export default state;

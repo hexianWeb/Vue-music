@@ -69,6 +69,6 @@ module.exports = {
   //     config.plugins.push(new BundleAnalyzerPlugin())
   //   }
   // },
-  productionSourceMap: false, // 生产不需要打开sourceMap
+  productionSourceMap: false, // 生产不需要打开sourceMap 否则别人很容易去看你的源码
   publicPath: process.env.NODE_ENV === "production" ? "/music-next/" : "/",
 };
