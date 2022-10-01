@@ -43,6 +43,12 @@
               </li>
             </transition-group>
           </scroll>
+          <div class="list-add">
+            <div class="add" @click="showAddSong">
+              <i class="icon-add"></i>
+              <span class="text">添加歌曲到队列</span>
+            </div>
+          </div>
           <div class="list-footer" @click="hide">
             <span>关闭</span>
           </div>
@@ -53,6 +59,7 @@
           text="是否清空播放列表？"
           confirm-btn-text="清空"
         ></confirm>
+        <AddSong ref="addSongRef"></AddSong>
       </div>
     </transition>
   </teleport>
@@ -69,12 +76,14 @@ import { useStore } from "vuex";
 // hooks
 import useMode from "./useMode";
 import useFavorite from "./useFavorite";
+import AddSong from "../addSong/addSong.vue";
 
 export default {
   name: "playList",
   components: {
     Scroll,
     Confirm,
+    AddSong,
   },
   setup() {
     //   data
@@ -84,6 +93,7 @@ export default {
     const scrollRef = ref(null);
     const listRef = ref(null);
     const confirmRef = ref(null);
+    const addSongRef = ref(null);
     // store state
     const store = useStore();
     const playList = computed(() => store.state.playList);
@@ -166,6 +176,9 @@ export default {
       hide();
     }
 
+    function showAddSong() {
+      addSongRef.value.show();
+    }
     return {
       // data
       visible,
@@ -174,6 +187,7 @@ export default {
       scrollRef,
       listRef,
       confirmRef,
+      addSongRef,
       removing,
       // hooks
       // useMode
@@ -192,6 +206,7 @@ export default {
 
       showConfirm,
       confirmClear,
+      showAddSong,
     };
   },
 };
@@ -278,6 +293,30 @@ export default {
         }
       }
     }
+
+    .list-add {
+      width: 140px;
+      margin: 20px auto 30px auto;
+
+      .add {
+        display: flex;
+        align-items: center;
+        padding: 8px 16px;
+        border: 1px solid $color-text-l;
+        border-radius: 100px;
+        color: $color-text-l;
+
+        .icon-add {
+          margin-right: 5px;
+          font-size: $font-size-small-s;
+        }
+
+        .text {
+          font-size: $font-size-small;
+        }
+      }
+    }
+
     .list-footer {
       text-align: center;
       line-height: 50px;

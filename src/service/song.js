@@ -19,7 +19,7 @@ export function processSongs(songs) {
       })
       .filter((song) => {
         // 由于第三方API会对某些歌曲进行加密 所以需要有vkey的才能正常播放 其余不能
-        return song.url.indexOf("vkey") > -1;
+        return song.url && song.url.indexOf("vkey") > -1;
       });
   });
 }

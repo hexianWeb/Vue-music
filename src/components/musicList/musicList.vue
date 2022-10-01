@@ -64,7 +64,7 @@ export default {
     rank: Boolean,
   },
   setup(props) {
-    console.log(props);
+    // console.log(props);
   },
   data() {
     return {

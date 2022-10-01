@@ -1,6 +1,13 @@
 import axios from "axios";
 
-const baseURL = "/";
+// 线上
+// const baseURL = "http://106.14.211.207:9002";
+const hostUrl =
+  process.env.NODE_ENV === "production"
+    ? "http://106.14.211.207"
+    : "http://127.0.0.1";
+const baseURL =
+  process.env.NODE_ENV === "production" ? `${hostUrl}/hexianMusic/` : "/";
 
 axios.defaults.baseURL = baseURL;
 

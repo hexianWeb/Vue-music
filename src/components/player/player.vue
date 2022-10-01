@@ -143,6 +143,7 @@ import useCD from "./useCD";
 import useLyric from "./useLyric";
 import useFavorite from "./useFavorite";
 import useInterActive from "./useInteractive";
+import usePlayHistory from "./use-play-history";
 // Components
 import progressBar from "./progress-bar.vue";
 import Scroll from "@/components/scroll/scroll.vue";
@@ -197,6 +198,7 @@ export default {
     const { ModeIcon, changeMode } = useMode();
     const { toggleFavorite, getFavoriteIcon } = useFavorite();
     const { cdStyle, cdRef, cdImageRef } = useCD();
+    const { savePlay } = usePlayHistory();
     const {
       currentLyric,
       currentLineNum,
@@ -330,6 +332,7 @@ export default {
       }
       songReady.value = true;
       playLyric();
+      savePlay(currentSong.value);
     }
     //
     function error() {

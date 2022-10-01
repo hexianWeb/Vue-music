@@ -1,26 +1,29 @@
-const express = require('express')
-const compression = require('compression')
-const cookieParser = require('cookie-parser')
-const registerRouter = require('./router')
+const express = require("express");
+const compression = require("compression");
+// const cookieParser = require("cookie-parser");
+const registerRouter = require("./router");
 
-const port = process.env.PORT || 9002
+const cors = require("cors");
+// 监听的端口
+const port = process.env.PORT || 9002;
 
-const app = express()
+const app = express();
 
-app.use(cookieParser())
+app.use(cors());
+// app.use(cookieParser());
 
 // 代理自己写的接口
-registerRouter(app)
+registerRouter(app);
 
-app.use(compression())
+app.use(compression());
 
 // 静态资源目录
-app.use(express.static('./dist'))
+app.use(express.static("./dist"));
 
 module.exports = app.listen(port, function (err) {
   if (err) {
-    console.log(err)
-    return
+    console.log(err);
+    return;
   }
-  console.log('Listening at http://localhost:' + port + '\n')
-})
+  console.log("Listening at http://localhost:" + port + "\n");
+});

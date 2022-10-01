@@ -1,7 +1,12 @@
 <template>
-  <div class="suggest" v-loading:[loadingText]="!singer && !songs.length">
+  <div
+    class="suggest"
+    v-loading:[loadingText]="loading"
+    v-noresult:[noResultText]="noResult"
+    ref="rootRef"
+  >
     <ul class="suggest-list">
-      <li class="suggest-item" v-if="singer">
+      <li class="suggest-item" v-if="singer" @click="selectSinger(singer)">
         <div class="icon">
           <i class="icon-mine"></i>
         </div>
@@ -9,7 +14,12 @@
           <p class="text">{{ singer.name }}</p>
         </div>
       </li>
-      <li class="suggest-item" v-for="song in songs" :key="song.id">
+      <li
+        class="suggest-item"
+        v-for="song in songs"
+        :key="song.id"
+        @click="selectSong(song)"
+      >
         <div class="icon">
           <i class="icon-music"></i>
         </div>
@@ -17,16 +27,16 @@
           <p class="text">{{ singer.name }}-{{ song.name }}</p>
         </div>
       </li>
-      <!-- <div class="suggest-item" v-loading:[loadingText]="pullUpLoading"></div> -->
+      <div class="suggest-item" v-loading:[loadingText]="pullUpLoading"></div>
     </ul>
   </div>
 </template>
 
 <script>
-import { ref, watch, computed, nextTick } from "vue";
+import { ref, watch, computed } from "vue";
 import { search } from "@/service/search";
 import { processSongs } from "@/service/song";
-// import usePullUpLoad from "./use-pull-up-load";
+import usePullUpLoad from "./use-pull-up-load";
 
 export default {
   name: "suggest",
@@ -39,11 +49,19 @@ export default {
   },
   emits: ["select-song", "select-singer"],
   setup(props, { emit }) {
+    // data
     const singer = ref(null);
     const songs = ref([]);
     const hasMore = ref(true);
     const page = ref(1);
     const loadingText = ref("");
+    const noResultText = ref("");
+    // hooks
+    const { isPullUpLoad, rootRef, scroll } = usePullUpLoad(
+      searchMore
+      // preventPullUpload
+    );
+    // watch
     watch(
       () => props.query,
       async (newQuery) => {
@@ -54,6 +72,19 @@ export default {
       }
     );
 
+    // computed
+    const onResult = computed(() => {
+      return !singer.value && !songs.value.length && !hasMore.value;
+    });
+
+    const loading = computed(() => {
+      return !singer.value && !songs.value.length;
+    });
+
+    const pullUpLoading = computed(() => {
+      return isPullUpLoad.value && hasMore.value;
+    });
+    // 第一次搜索
     async function searchFirst() {
       if (!props.query) {
         return;
@@ -63,20 +94,18 @@ export default {
       songs.value = [];
       singer.value = null;
       hasMore.value = true;
-
-      // const result = await search(props.query, page.value, props.showSinger);
       const result = await search(props.query);
-      console.log(result);
       // 获取歌曲的Url
       songs.value = await processSongs(result.songs);
       singer.value = result.singer[0];
       hasMore.value = result.hasMore;
 
-      // hasMore.value = result.hasMore;
       // await nextTick();
       // await makeItScrollable();
     }
 
+    // fixme:接口已被弃用
+    //#region
     // async function searchMore() {
     //   if (!hasMore.value || !props.query) {
     //     return;
@@ -95,7 +124,14 @@ export default {
     //     manualLoading.value = false;
     //   }
     // }
-
+    //#endregion
+    async function searchMore() {
+      // 接口变更 原来的接口无效
+      hasMore.value = false;
+      if (!hasMore.value || !props.query) {
+        return;
+      }
+    }
     function selectSong(song) {
       emit("select-song", song);
     }
@@ -105,9 +141,19 @@ export default {
     }
 
     return {
+      // data
       singer,
       songs,
+      // data-dierction
       loadingText,
+      noResultText,
+      // data Ref
+      rootRef,
+      // computed
+      onResult,
+      loading,
+      pullUpLoading,
+      // function
       selectSong,
       selectSinger,
     };

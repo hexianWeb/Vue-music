@@ -3,6 +3,7 @@
 import musicList from "@/components/musicList/musicList.vue";
 import storage from "good-storage";
 import { processSongs } from "@/service/song";
+import { SINGER_KEY } from "@/assets/js/constant";
 
 export default function createDetailComponent(name, key, fetch) {
   return {
@@ -37,7 +38,8 @@ export default function createDetailComponent(name, key, fetch) {
       },
       pic() {
         const data = this.computedData;
-        return data && data.pic;
+        console.log(data);
+        return data && (data.pic || this.songs[0].pic);
       },
       title() {
         const data = this.computedData;
@@ -45,6 +47,7 @@ export default function createDetailComponent(name, key, fetch) {
       },
     },
     async created() {
+      // debugger;
       const data = this.computedData;
       if (!data) {
         const path = this.$route.matched[0].path;
@@ -55,7 +58,18 @@ export default function createDetailComponent(name, key, fetch) {
       }
       const result = await fetch(data);
       this.songs = await processSongs(result.songs);
+      // fixme: 写入后台
+      if (!Object.prototype.hasOwnProperty.call(data, "pic")) {
+        console.log("我没有歌手图片");
+        console.log(data.name);
+      }
       this.loading = false;
+    },
+    methods: {
+      // 向session里存入singer
+      cacheSinger(singer) {
+        storage.session.set(SINGER_KEY, singer);
+      },
     },
   };
 }

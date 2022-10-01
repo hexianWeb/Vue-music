@@ -21,10 +21,10 @@ export default function usePullUpLoad(requestData, preventPullUpLoad) {
     scrollVal.on("pullingUp", pullingUpHandler);
 
     async function pullingUpHandler() {
-      if (preventPullUpLoad.value) {
-        scrollVal.finishPullUp();
-        return;
-      }
+      // if (preventPullUpLoad.value) {
+      //   scrollVal.finishPullUp();
+      //   return;
+      // }
       isPullUpLoad.value = true;
       await requestData();
       scrollVal.finishPullUp();

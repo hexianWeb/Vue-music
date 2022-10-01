@@ -127,6 +127,8 @@ function registerRouter(app) {
   registerHotKeys(app);
 
   registerSearch(app);
+
+  registerSingerPic(app);
 }
 
 // done: 注册推荐列表接口路由
@@ -658,7 +660,8 @@ function registerHotKeys(app) {
   });
 }
 
-// fixme: 注册搜索查询接口
+// done: 注册搜索查询接口
+
 function registerSearch(app) {
   app.get("/api/search", (req, res) => {
     //#region
@@ -666,7 +669,7 @@ function registerSearch(app) {
     //#endregion
     const { query } = req.query;
 
-    const url = `http://127.0.0.1:3300/search?key=${query}`;
+    const url = `http://localhost:3300/search?key=${query}`;
     const r_url = encodeURI(url);
     get(r_url).then((response) => {
       const data = response.data;
@@ -702,10 +705,25 @@ function registerSearch(app) {
         },
       });
     });
-    // axios.get(url).then((Res) => {
-    //   console.log(Res);
-    // });
   });
 }
 
+// 注册获取歌手封面接口
+function registerSingerPic(app) {
+  app.get("/api/searchSinger", (req, res) => {
+    let { name } = req.query;
+    let tmpUrl = encodeURI(
+      `https://music.163.com/api/search/get/web?s=${name}&type=100`
+    );
+    get(tmpUrl).then((response) => {
+      const data = response.result;
+      res.json({
+        code: ERR_OK,
+        result: {
+          data,
+        },
+      });
+    });
+  });
+}
 module.exports = registerRouter;

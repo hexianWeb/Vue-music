@@ -71,3 +71,35 @@ export function clearSongList({ commit }) {
   commit("setCurrentIndex", 0);
   commit("setPlayingState", false);
 }
+
+export function addSong({ commit, state }, song) {
+  if (typeof song.singer !== "string") {
+    song.singer = song.singer[0].name;
+  }
+  const playList = state.playList.slice();
+  const sequenceList = state.sequenceList.slice();
+  let currentIndex = state.currentIndex;
+
+  const playIndex = findIndex(playList, song);
+
+  // 存在与歌单
+  if (playIndex > -1) {
+    currentIndex = playIndex;
+    // 不存在与歌单
+  } else {
+    playList.push(song);
+    currentIndex = playList.length - 1;
+  }
+
+  const sequenceIndex = findIndex(sequenceList, song);
+  if (sequenceIndex === -1) {
+    sequenceList.push(song);
+  }
+
+  // 提交状态
+  commit("setSequenceList", sequenceList);
+  commit("setPlayList", playList);
+  commit("setCurrentIndex", currentIndex);
+  commit("setPlayingState", true);
+  commit("setFullScreen", true);
+}

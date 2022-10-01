@@ -40,6 +40,7 @@ module.exports = {
     // before(app) {
     //   registerRouter(app);
     // },
+    //#region -------------以下省略
     // 但是vue/cli5.0后 取消了before
     // setupMiddlewares(middlewares, devServer) {
     //   if (!devServer) {
@@ -59,16 +60,25 @@ module.exports = {
     //   });
     //   // console.log(app.app.get);
     // },
+    //#endregion
+    // proxy: {
+    //   "/api": {
+    //     target: "http:106.14.211.207:9002",
+    //     secure: false,
+    //     changeOrigin: true,
+    //   },
+    // },
   },
   lintOnSave: false,
   transpileDependencies: true,
-
-  // configureWebpack: (config) => {
-  //   if (process.env.npm_config_report) {
-  //     const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
-  //     config.plugins.push(new BundleAnalyzerPlugin())
-  //   }
-  // },
+  // 打包
+  configureWebpack: (config) => {
+    if (process.env.npm_config_report) {
+      const BundleAnalyzerPlugin =
+        require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
+      config.plugins.push(new BundleAnalyzerPlugin());
+    }
+  },
   productionSourceMap: false, // 生产不需要打开sourceMap 否则别人很容易去看你的源码
-  publicPath: process.env.NODE_ENV === "production" ? "/music-next/" : "/",
+  publicPath: process.env.NODE_ENV === "production" ? "/hexianMusic/" : "/",
 };
