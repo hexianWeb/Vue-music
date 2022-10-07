@@ -1,24 +1,125 @@
-# vue-music
+# Vue-Music
 
-## Project setup
-```
-npm install
-```
+> **Vue3.0**构建移动端音乐APP
 
-### Compiles and hot-reloads for development
-```
+[预览地址（点击我）](http://106.14.211.207:8080/hexianMusic/#/recommend)
+
+## 效果截图
+
+-----------------------
+
+### 效果一
+
+![](ReadMeImg/首页.gif)
+
+### 效果二
+
+![](ReadMeImg/歌手.gif)
+
+### 效果三
+
+![](ReadMeImg/歌曲.gif)
+
+### 效果四
+
+![](ReadMeImg/搜索.gif)
+
+
+
+## 技术栈
+
+------------------------------
+
+[前端]
+
+- `Vue`3.0：用于构建用户界面的 MVVM 框架。它的核心是**响应的数据绑定**和**组系统件**
+- `vue-router`：为单页面应用提供的路由系统，项目上线前使用了 `Lazy Loading Routes` 技术来实现异步加载优化性能
+- `vuex`：Vue 集中状态管理，在多个组件共享某些状态时非常便捷
+- `vue-lazyload`：第三方图片懒加载库，优化页面加载速度
+- `better-scroll`2.0：iscroll 的优化版，使移动端滑动体验更加流畅
+- `Sass(Scss)`：css 预编译处理器
+- `ES6`：ECMAScript 新一代语法，模块化、解构赋值、Promise、Class 等方法非常好用
+
+【后端】
+
+- `Node.js`：利用 Express 起一个本地测试服务器（非本人原创，我只对其进行了部分修改） [源码地址]()
+- `axios`：服务端通讯。结合 Node.js 代理后端请求，抓取 QQ音乐(PC端)数据
+
+【自动化构建及其他工具】
+
+- `vue-cli`：Vue 脚手架工具，快速搭建项目
+- `eslint`：代码风格检查工具，规范代码格式
+- log4js: 日志输出与检查
+
+## 收获
+
+------------
+
+1. 总结出一套适用于 Vue项目的通用组件
+2. 总结了一套常用的 SCSS mixin 库
+3. 总结了一套常用的 JS 工具函数库
+4. 学会了如何在Vue中优雅的操作Dom来完成优秀的用户交互体验
+
+## 实现页面
+
+-----------------
+
+主要页面：播放器内核页、推荐页、歌单详情页、歌手页、歌手详情页、排行页、搜索页、添加歌曲页、个人中心页等。
+
+核心页面：播放器内核页
+
+### 推荐页
+
+顶部是一个轮播图组件,使用第三方库 swiper 辅助实现，下部分是一个歌单推荐列表，图片使用懒加载技术 `vue3-lazyload`,优化页面加载速度，给用户更好的体验。当数据未请求到时，显示`loading`组件
+
+#### 推荐页 ->歌单详情页
+
+这个组件更加注重 UX，做了很多类原生 APP 动画，如下拉图片放大、跟随推动、ios 渐进增强的高斯模糊效果 `backdrop-filter` 等
+
+### 歌手页
+
+该组件不仅可以随大屏手势滑动，还可以利用右侧的`shortcut`滑动。而这里的图片同样使用了懒加载`vue3-lazyload`，以优化页面加载速度。
+
+#### 歌手页 ->歌手详情页
+
+复用歌单详情页
+
+### 播放器内核页
+
+核心组件。用 `vuex` 管理各种播放时状态，播放、暂停等功能调用 [audio API](http://www.w3school.com.cn/tags/html_ref_audio_video_dom.asp)，其中绝大部分动画都来自`animate`库实现，底部的进度条组件则是由SVG绘制而成。
+
+播放模式有：顺序播放、单曲循环、随机播放，原理在后序会有进一步介绍。
+
+歌词显示样式使用了野库`lyric-parser`
+
+这里有它相关API介绍
+
+-------
+
+> LyricParser[API相关介绍]( https://github.com/ustbhuangyi/lyric-parser )
+
+增加了当前播放列表组件，可在其中加入/删除歌曲。
+
+### 排行页
+
+普通组件，没什么好说的
+
+#### 排行页->歌单详情页
+
+复用歌单详情页，没什么好说的
+
+## 进一步补充
+
+歌单的状态会随着选择歌单播放状态变更而变更，比如从顺序播放切换到单曲播放则需要歌单由原来的顺序遍历，变为只播放一首。状态会贯穿整个应用。所以选择vuex集中管理歌单状态。并且将歌单分为基础歌单与播放歌单。基础歌单为默认顺序播放状态，播放歌单相当于基础歌单的`个性化`，会根据播放状态的不同而生成不同的歌单。
+
+## 本地安装与运行
+
+```bash
+git clone https://github.com/hexianWeb/vue-music.git
+cd vue-music
+npm install 
 npm run serve
 ```
 
-### Compiles and minifies for production
-```
-npm run build
-```
 
-### Lints and fixes files
-```
-npm run lint
-```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
